@@ -55,9 +55,8 @@ with open(music, 'r') as file:
 	songs = file.read().splitlines()
 
 def is_song(song):
-	if song.endswith(audio_format):
-		return True
-	return False
+	return song.endswith(audio_format):
+
 
 
 def clear_title(song):
