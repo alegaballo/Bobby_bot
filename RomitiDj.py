@@ -54,10 +54,6 @@ USERS = set([])
 with open(music, 'r') as file:
 	songs = file.read().splitlines()
 
-def is_song(song):
-	return song.endswith(audio_format):
-
-
 
 def clear_title(song):
 	song = song.replace('_', ' ')
@@ -72,7 +68,7 @@ def random_song(songs, num_songs):
 	while drawed < num_songs:
 		n = random.randint(0, total-1)
 		song = songs[n]
-		if is_song(song):
+		if song.endswith(audio_format):
 			drawed += 1
 			selected.append(clear_title(song))
 	return selected
