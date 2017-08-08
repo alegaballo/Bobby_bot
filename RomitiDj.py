@@ -7,6 +7,7 @@ import threading
 import time
 import pickle
 import config
+import os.path
 from spotipy.oauth2 import SpotifyClientCredentials
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
@@ -47,8 +48,10 @@ black_list = ('(Video	)')
 client_credentials_manager= SpotifyClientCredentials()
 spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-USERS = set([])
-
+if os.path.isfile('users.pkl'):
+	USERS = pickle.load(open('users.pkl','rb+'))
+else:
+	USERS = set([])
 
 
 with open(music, 'r') as file:
@@ -142,7 +145,6 @@ def unknown(bot, update):
 
 
 def main():
-	USERS = pickle.load(open('users.pkl','rb+'))
 	print(USERS)
 	bot = telegram.Bot(config.credentials['telegram_bot'])
 	updater = Updater(config.credentials['telegram_bot'])
@@ -154,6 +156,7 @@ def main():
 	updater.dispatcher.add_handler(CommandHandler('help', help))
 	unknown_handler = MessageHandler(Filters.command, unknown)
 	updater.dispatcher.add_handler(unknown_handler)
+	
 	t = threading.Thread(target=daily_song, args=(bot,), daemon=True)
 	t.start()
 	updater.start_polling()
