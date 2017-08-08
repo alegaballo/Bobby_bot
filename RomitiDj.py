@@ -116,7 +116,7 @@ def bobby(bot, update):
 
 
 def test(bot, update):
-	print('alive')
+	print(USERS)
 
 
 def stupid_job(bot):
