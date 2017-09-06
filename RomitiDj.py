@@ -8,6 +8,7 @@ import time
 import pickle
 import config
 import os.path
+import logging
 from spotipy.oauth2 import SpotifyClientCredentials
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
@@ -35,9 +36,13 @@ def youtube_search(title):
         maxResults=1,
         type='video',).execute()
 
-    id = search_response['items'][0]['id']['videoId']
-    return VIDEO+id
+    try:
+        id = search_response['items'][0]['id']['videoId']
+        return VIDEO+id
 
+    except IndexError:
+        logging.error('Can\'t find string {:s} on YOUTUBE'.format(title))
+        return False
 
 # ##################################### #
 
@@ -58,6 +63,7 @@ else:
 with open(music, 'r') as file:
     songs = file.read().splitlines()
 
+logging.basicConfig(filename='debugging.log',level=logging.DEBUG, format='%(levelname)s:%(asctime)s:%(message)s')
 
 def clear_title(song):
     song = song.replace('_', ' ')
@@ -86,15 +92,13 @@ def ask_spotify(song_list, spotify):
             s = results['tracks']['items'][0]['external_urls']['spotify']
             print(s)
         except IndexError:
+            logging.debug('Can\'t find string: {:s}'.format(song))
             try:
                 s = youtube_search(song)
                 print(s)
             except (HttpError, e):
                 print("An HTTP error {} occurred:\n{}".format(
-                    e.resp.status, e.content))
-
-            # s = 'Bobby salva le canzoni con nomi di merda, sta roba qua'
-            #     '"{:s}" non esiste su Spotify'.format(song)
+                e.resp.status, e.content))
     return s
 
 
@@ -102,7 +106,7 @@ def start(bot, update):
     user = update.message['chat']['id']
     USERS.add(user)
     bot.send_message(
-        chat_id=update.message.chat_id, text='Bishop is the answer!')
+    chat_id=update.message.chat_id, text='Bishop is the answer!')
     print(USERS)
     pickle.dump(USERS, open('users.pkl', 'wb+'))
 
@@ -115,7 +119,9 @@ def stop(bot, update):
 
 
 def bobby(bot, update):
-    song = ask_spotify(random_song(songs, 1), spotify)
+    song = False
+    while not song:
+        song = ask_spotify(random_song(songs, 1), spotify)
     bot.send_message(chat_id=update.message.chat_id, text=song)
 
 
@@ -124,8 +130,10 @@ def test(bot, update):
 
 
 def stupid_job(bot):
-    song = 'It\'s Bobby time!\n'
-    song += ask_spotify(random_song(songs, 1), spotify)
+    song = False
+    while not song:
+        song = ask_spotify(random_song(songs, 1), spotify)
+    song = 'It\'s Bobby time!\n' + song
     for user in USERS:
         bot.send_message(chat_id=user, text=song)
 
