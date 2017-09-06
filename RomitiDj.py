@@ -63,7 +63,7 @@ else:
 with open(music, 'r') as file:
     songs = file.read().splitlines()
 
-logging.basicConfig(filename='debugging.log',level=logging.DEBUG, format='%(levelname)s:%(asctime)s:%(message)s')
+logging.basicConfig(filename='debugging.log',level=logging.WARNING, format='%(levelname)s:%(asctime)s:%(message)s')
 
 def clear_title(song):
     song = song.replace('_', ' ')
@@ -92,7 +92,7 @@ def ask_spotify(song_list, spotify):
             s = results['tracks']['items'][0]['external_urls']['spotify']
             print(s)
         except IndexError:
-            logging.debug('Can\'t find string: {:s}'.format(song))
+            logging.warning('Can\'t find string: {:s}'.format(song))
             try:
                 s = youtube_search(song)
                 print(s)
