@@ -41,7 +41,7 @@ def youtube_search(title):
         return VIDEO+id
 
     except IndexError:
-        logging.error('Can\'t find string {:s} on YOUTUBE'.format(title))
+        logger.error('Can\'t find string {:s} on YOUTUBE'.format(title))
         return False
 
 # ##################################### #
@@ -63,7 +63,13 @@ else:
 with open(music, 'r') as file:
     songs = file.read().splitlines()
 
-logging.basicConfig(filename='debugging.log',level=logging.WARNING, format='%(levelname)s:%(asctime)s:%(message)s')
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)
+
+fh = logging.FileHandler('bot.log')
+formatter = logging.Formatter('%(levelname)s:%(asctime)s:%(message)s')
+fh.setFormatter(formatter)
+logger.addHandler(fh)
 
 def clear_title(song):
     song = song.replace('_', ' ')
@@ -92,7 +98,7 @@ def ask_spotify(song_list, spotify):
             s = results['tracks']['items'][0]['external_urls']['spotify']
             print(s)
         except IndexError:
-            logging.warning('Can\'t find string: {:s}'.format(song))
+            logger.warning('Can\'t find string: {:s}'.format(song))
             try:
                 s = youtube_search(song)
                 print(s)
