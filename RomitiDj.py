@@ -141,8 +141,11 @@ def stupid_job(bot):
         song = ask_spotify(random_song(songs, 1), spotify)
     song = 'It\'s Bobby time!\n' + song
     for user in USERS:
-        bot.send_message(chat_id=user, text=song)
-
+        try:
+            bot.send_message(chat_id=user, text=song)
+        except Exception as e:
+            print(e)
+            print('Can\'t send message to user {:d}'.format(user))
 
 def daily_song(bot):
     schedule.every().day.at('11:00').do(stupid_job, bot)
