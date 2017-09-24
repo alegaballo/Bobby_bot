@@ -8,7 +8,7 @@ RomitiDJ_bot is a music recommender bot built for telegram. It's based on a list
 
 At the moment the bot supports the following commands:
 1. __/bobby__ _to retrieve a song randomly chosen from the list_
-2. __/start__ _to activate a subscription to a daily recommendation, happening at  11:00 - ,CDT_
+2. __/start__ _to activate a subscription to a daily recommendation, happening at  11:00 - CDT_
 3. __/stop__ _to stop the subscription to the daily recommendation_
 4. __/help__ _to display a help message_
 
